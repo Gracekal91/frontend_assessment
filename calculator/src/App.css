@@ -29,6 +29,7 @@
 }
 .calculator_screen .error-msg{
   display: block;
+  color: red;
 }
 .calculator_screen input{
   width: 100px;
@@ -66,4 +67,19 @@ button:disabled {
   padding: 2rem;
   border-radius: .5rem;
   text-align: center;
+}
+
+.reset-button{
+  display: block;
+  background: #161646;
+  color: white;
+width: 50px;
+  height: 20px;
+  line-height: 20px;
+  margin: 0 auto;
+  font-size: .7rem;
+  cursor: pointer;
+}
+small{
+  color: gray;
 }

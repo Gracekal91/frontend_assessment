@@ -1,96 +1,89 @@
 import './App.css';
-import {useState, useRef} from "react";
+import { useState, useRef } from "react";
+import * as math from 'mathjs';
 
 function App() {
-    const [firstNumber, setFirstNumber] = useState(null)
-    const [secondNumber, setSecondNumber] = useState(null)
-    const [operator, setOperator] = useState('')
-    const [result, setResult] = useState(0)
-    const [errorMsg, setErrorMsg] = useState('')
-    const [isDisabled, setIsDisabled] = useState(true)
+    const [firstNumber, setFirstNumber] = useState('');
+    const [secondNumber, setSecondNumber] = useState('');
+    const [operator, setOperator] = useState('');
+    const [result, setResult] = useState(0);
+    const [errorMsg, setErrorMsg] = useState('');
+    const [isDisabled, setIsDisabled] = useState(true);
+    const [isOperatorClicked, setIsOperatorClicked] = useState(false);
 
     const operatorRef = useRef('');
 
-    const handleClick = (event) => {
-        const updatedOperator = event.target.value;
-        operatorRef.current = updatedOperator;
-        console.log(operatorRef.current);
+
+    const handleOperatorClick = (value) => {
+        setIsOperatorClicked(true);
+        operatorRef.current = value;
+        setOperator(operatorRef.current);
     };
 
-    const isNumber = (input) => {
-        const regex = /^\d+$/;
-        return regex.test(input);
-    }
-
-
-    const reset = () =>{
-        setSecondNumber(null)
-        setFirstNumber(null)
+    const resetCalculator = () => {
+        setSecondNumber('');
+        setFirstNumber('');
         operatorRef.current = '';
-    }
+        setIsOperatorClicked(false);
+        setErrorMsg('')
+    };
 
-    const handleResult = (event) =>{
-        if(event.key === 'Enter'){
-            const result = eval(`parseInt(${firstNumber}) ${operatorRef.current} parseInt(${secondNumber})`);
-            setResult(result)
-            console.log(result)
-            reset()
-        }
-    }
-
-    const updateNumbers = (event) => {
-        let num = event.target.value;
-        let isNumberValid = true;
-        const regex = /^\d+$/;
-
-        for (let char of num) {
-            if (!regex.test(char)) {
-                isNumberValid = false;
-                break;
+    const handleResult = (event) => {
+        if (event.key === 'Enter') {
+            try {
+                const result = math.evaluate(`${parseInt(firstNumber)} ${operatorRef.current} ${parseInt(secondNumber)}`);
+                setResult(result);
+                resetCalculator();
+            } catch (error) {
+                setErrorMsg('Invalid expression');
             }
         }
+    };
+
+    const handleNumberChange = (event, setNumber) => {
+        const num = event.target.value;
+        const isNumberValid = /^\d+$/.test(num);
 
         if (isNumberValid) {
+            setNumber(num);
             setIsDisabled(false);
             setErrorMsg('');
-
-            if (operatorRef.current === '') {
-                setFirstNumber(num);
-                console.log('First number:', firstNumber);
-            } else {
-                setSecondNumber(num);
-                console.log('Second number:', secondNumber);
-            }
         } else {
             setErrorMsg('Please enter a valid number');
         }
     };
 
-  return (
-    <div className="App">
-      <div className="calculator_container">
-          <div className="calculator_header"></div>
-          <div className="content">
-              <div className="calculator_screen">
-                  <input type="text" className='input_screen' onChange={updateNumbers} onKeyPress={handleResult}/>
-                  {
-                      errorMsg && <span className='error-msg'> {errorMsg} </span>
-                  }
-                  <div>
-                  <button value='+' onClick={handleClick}  disabled={isDisabled}>+</button>
-                  <button value='-' onClick={handleClick} disabled={isDisabled}>-</button>
-                  <button value='*' onClick={handleClick} disabled={isDisabled}>*</button>
-                  <button value='/' onClick={handleClick} disabled={isDisabled}>/</button>
-                  </div>
-              </div>
-              <div className="calculator_result">
-                  <span style={{display: 'block'}}>{firstNumber}{operatorRef.current}{secondNumber}</span>
-                  <span>Result: {result}</span>
-              </div>
-          </div>
-      </div>
-    </div>
-  );
+    return (
+        <div className="App">
+            <div className="calculator_container">
+                <div className="calculator_header"></div>
+                <div className="content">
+                    <div className="calculator_screen">
+                        <input
+                            value={isOperatorClicked ? secondNumber : firstNumber}
+                            placeholder={isOperatorClicked ? "Enter number 2" : "Enter number 1"}
+                            type="text"
+                            className='input_screen'
+                            onChange={(event) => isOperatorClicked ? handleNumberChange(event, setSecondNumber) : handleNumberChange(event, setFirstNumber)}
+                            onKeyPress={handleResult}
+                        />
+                        {errorMsg && <span className='error-msg'>{errorMsg} <span className='reset-button' onClick={resetCalculator}>Reset</span>  </span>}
+                        <div>
+                            <button value='+' onClick={() => handleOperatorClick('+')} disabled={isDisabled}>+</button>
+                            <button value='-' onClick={() => handleOperatorClick('-')} disabled={isDisabled}>-</button>
+                            <button value='*' onClick={() => handleOperatorClick('*')} disabled={isDisabled}>*</button>
+                            <button value='/' onClick={() => handleOperatorClick('/')} disabled={isDisabled}>/</button>
+                        </div>
+                    </div>
+                    <div className="calculator_result">
+                        <span style={{ display: 'block' }}>{firstNumber}{operatorRef.current}{secondNumber}</span>
+                        <span>Result: {result}</span>
+                    </div>
+                </div>
+                <small>Press enter to see the result</small>
+            </div>
+        </div>
+    );
 }
 
 export default App;
