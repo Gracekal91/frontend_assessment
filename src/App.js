@@ -5,7 +5,6 @@ import * as math from 'mathjs';
 function App() {
     const [firstNumber, setFirstNumber] = useState('');
     const [secondNumber, setSecondNumber] = useState('');
-    const [operator, setOperator] = useState('');
     const [result, setResult] = useState(0);
     const [errorMsg, setErrorMsg] = useState('');
     const [isDisabled, setIsDisabled] = useState(true);
@@ -17,7 +16,6 @@ function App() {
     const handleOperatorClick = (value) => {
         setIsOperatorClicked(true);
         operatorRef.current = value;
-        setOperator(operatorRef.current);
     };
 
     const resetCalculator = () => {
