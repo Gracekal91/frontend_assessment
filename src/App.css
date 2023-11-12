@@ -14,13 +14,13 @@
 }
 
 .content{
-  width: 600px;
+  width: 100%;
   padding: 3rem 0;
 }
 
 .calculator_screen
 {
-  width: 400px;
+  width: 80%;
   border: 1px solid #161646;
   margin: .5rem auto;
   padding: 2rem;
@@ -61,7 +61,7 @@ button:disabled {
 }
 
 .calculator_result{
-  width: 400px;
+  width: 80%;
   border: 1px solid #161646;
   margin: .5rem auto;
   padding: 2rem;
@@ -82,4 +82,11 @@ width: 50px;
 }
 small{
   color: gray;
+}
+
+@media screen and (max-width: 600px){
+  .calculator_container, .content{
+    width: 90%;
+    margin: 0 auto;
+  }
 }
